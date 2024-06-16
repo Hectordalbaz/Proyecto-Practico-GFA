@@ -24,10 +24,10 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Login
      */
     public boolean user, pass;
-    public Connection con;
-    String host = "localhost", puerto = "3306", bd = "usuarios", usuario = "root", cont = "root";
-    String clavedb,contdb,nomdb;
-    
+
+    String clavedb, contdb, nomdb, idusu;
+    private final conexionBD sql = new conexionBD();
+    private final Connection con = sql.conexion();
 
     public Login() {
         initComponents();
@@ -48,32 +48,27 @@ public class Login extends javax.swing.JFrame {
         jPFCont.setBorder(new JTextField().getBorder());
 
     }
-    
-    public void obtenerDatos(String clave){
-         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + puerto + "/" + bd + "", usuario, cont);
-            if (con != null) {
-                ResultSet rs;
-                try (PreparedStatement ps = con.prepareStatement("SELECT clave,nombre,contrasena FROM Usuarios WHERE clave=\""+clave+"\";")) {
-                    rs = ps.executeQuery();
-                    while (rs.next()) {
-                        clavedb=rs.getString("clave");
-                        nomdb=rs.getString("nombre");
-                        contdb=rs.getString("contrasena");
-                    }
+
+    public void obtenerDatos(String clave) {
+        if (con != null) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT id_usuario,clave,nombre,contrasena FROM Usuarios WHERE clave=\"" + clave + "\";")) {
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    idusu = rs.getString("id_usuario");
+                    clavedb = rs.getString("clave");
+                    nomdb = rs.getString("nombre");
+                    contdb = rs.getString("contrasena");
                 }
                 rs.close();
-                con.close();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "No se pudieron obtener los datos de registro: " + e, "Atención", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (ClassNotFoundException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "No se pudieron obtener los datos de registro: " + e, "Atención", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     //Indicar los campos que son obligatorios
-    public void iniciarSesion() {
-        String usu=jTFUsuario.getText(),contrasena=jPFCont.getText();
+    public void validarDatos() {
+        String usu = jTFUsuario.getText(), contrasena = jPFCont.getText();
         if (usu.isEmpty() || contrasena.isEmpty()) {
             if (jTFUsuario.getText().isEmpty()) {
                 jLErrorUsu.setVisible(true);
@@ -85,18 +80,26 @@ public class Login extends javax.swing.JFrame {
                 jLErrorCont.setText("*Campo obligatorio");
                 jPFCont.setBorder(BorderFactory.createLineBorder(error, 2));
             }
-        }else{
+        } else {
             obtenerDatos(usu);
-            if(!usu.equals(clavedb)){
-                 jLErrorUsu.setVisible(true);
+            if (!usu.equals(clavedb)) {
+                jLErrorUsu.setVisible(true);
                 jLErrorUsu.setText("*El usuario no existe");
                 jTFUsuario.setBorder(BorderFactory.createLineBorder(error, 2));
-            } else if(usu.equals(clavedb) && !contrasena.equals(clavedb)){
-                 jLErrorCont.setVisible(true);
+            } else if (usu.equals(clavedb) && !contrasena.equals(contdb)) {
+                jLErrorCont.setVisible(true);
                 jLErrorCont.setText("*La contraseña es incorrecta");
-                jPFCont.setBorder(BorderFactory.createLineBorder(error, 2));      
-            }else if(usu.equals(clavedb) && contrasena.equals(clavedb)){
-                 JOptionPane.showMessageDialog(null, "!Bienvenido!: " + nomdb, "Atención", JOptionPane.PLAIN_MESSAGE);
+                jPFCont.setBorder(BorderFactory.createLineBorder(error, 2));
+            } else if (usu.equals(clavedb) && contrasena.equals(contdb)) {
+                try (PreparedStatement ps = con.prepareStatement("INSERT INTO Sesiones(id_usuario,fecha_ini_ses) VALUES (" + idusu + ",now());")) {
+                    ps.executeUpdate();
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(null, "No se pudieron obtener los datos de registro: " + e, "Atención", JOptionPane.ERROR_MESSAGE);
+                }
+                Menu menu = new Menu();
+                menu.setVisible(true);
+                this.dispose();
+                inicializar();
             }
         }
     }
@@ -117,15 +120,17 @@ public class Login extends javax.swing.JFrame {
         jTFUsuario = new javax.swing.JTextField();
         jLLogCont = new javax.swing.JLabel();
         jPFCont = new javax.swing.JPasswordField();
-        jBIniSes = new javax.swing.JButton();
         jLErrorCont = new javax.swing.JLabel();
         jLErrorUsu = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jBIniSes = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         Fondo.setFocusable(false);
         Fondo.setOpaque(false);
@@ -134,7 +139,7 @@ public class Login extends javax.swing.JFrame {
         jPanel1.setPreferredSize(new java.awt.Dimension(300, 184));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLIniSes.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLIniSes.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jLIniSes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLIniSes.setText("Iniciar sesión");
         jPanel1.add(jLIniSes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 262, 22));
@@ -161,19 +166,23 @@ public class Login extends javax.swing.JFrame {
         });
         jPanel1.add(jPFCont, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 108, 262, 22));
 
-        jBIniSes.setText("Iniciar sesión");
-        jBIniSes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBIniSesActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jBIniSes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 162, 262, 22));
-
         jLErrorCont.setText("Error");
         jPanel1.add(jLErrorCont, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 80, -1, 22));
 
         jLErrorUsu.setText("Error");
         jPanel1.add(jLErrorUsu, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 30, -1, -1));
+
+        jBIniSes.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jBIniSes.setText("Iniciar sesión");
+        jBIniSes.setPreferredSize(new java.awt.Dimension(150, 30));
+        jBIniSes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBIniSesActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jBIniSes);
+
+        jPanel1.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, 260, -1));
 
         Fondo.add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -235,7 +244,7 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBIniSesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBIniSesActionPerformed
-        iniciarSesion();
+        validarDatos();
     }//GEN-LAST:event_jBIniSesActionPerformed
     //Regresa el color original al ser enfocado
     private void jTFUsuarioFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTFUsuarioFocusGained
@@ -297,6 +306,7 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JTextField jTFUsuario;
     // End of variables declaration//GEN-END:variables
 }

@@ -4,17 +4,26 @@
  */
 package com.gfa.ejerciciopracticogfa;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Hecto
  */
 public class Menu extends javax.swing.JFrame {
 
+    private final conexionBD sql = new conexionBD();
+    private final Connection con = sql.conexion();
+
     /**
      * Creates new form Menu
      */
     public Menu() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -32,12 +41,17 @@ public class Menu extends javax.swing.JFrame {
         jBUltSes = new javax.swing.JButton();
         jBCerrarSes = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
         jPanel1.setLayout(new java.awt.GridLayout(3, 0, 0, 5));
 
         jBRegistros.setText("Registrar nuevo usuario");
+        jBRegistros.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBRegistrosActionPerformed(evt);
+            }
+        });
         jPanel1.add(jBRegistros);
 
         jBUltSes.setText("Consultar últimos 10\n inicios de sesión");
@@ -49,6 +63,11 @@ public class Menu extends javax.swing.JFrame {
         jPanel1.add(jBUltSes);
 
         jBCerrarSes.setText("Cerrar sesión");
+        jBCerrarSes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBCerrarSesActionPerformed(evt);
+            }
+        });
         jPanel1.add(jBCerrarSes);
 
         Fondo.add(jPanel1);
@@ -59,8 +78,26 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBUltSesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBUltSesActionPerformed
-        // TODO add your handling code here:
+        Sesiones ses = new Sesiones();
+        ses.setVisible(true);
     }//GEN-LAST:event_jBUltSesActionPerformed
+
+    private void jBRegistrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBRegistrosActionPerformed
+        Registro reg = new Registro();
+        reg.setVisible(true);
+    }//GEN-LAST:event_jBRegistrosActionPerformed
+
+    private void jBCerrarSesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBCerrarSesActionPerformed
+
+        try {
+            con.close();
+            this.dispose();
+            Login log = new Login();
+            log.setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jBCerrarSesActionPerformed
 
     /**
      * @param args the command line arguments

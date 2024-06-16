@@ -4,17 +4,56 @@
  */
 package com.gfa.ejerciciopracticogfa;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Hecto
  */
 public class Sesiones extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Sesiones
-     */
+       private final conexionBD sql = new conexionBD();
+    private final Connection con = sql.conexion();
     public Sesiones() {
         initComponents();
+        tabla(jTUltSes);
+    }
+    
+    public void tabla(JTable tabla){
+        DefaultTableModel modelo = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column != 1;
+            }
+        };
+        tabla.setModel(modelo);
+        try {
+            if (con != null) {
+                PreparedStatement ps = con.prepareStatement("SELECT usuarios.nombre,sesiones.fecha_ini_ses FROM usuarios RIGHT JOIN Sesiones ON (usuarios.id_usuario=sesiones.id_usuario) ORDER BY sesiones.fecha_ini_ses DESC LIMIT 10;");
+                ResultSet rs = ps.executeQuery();
+                ResultSetMetaData rsMd = rs.getMetaData();
+                int cantidadCol = rsMd.getColumnCount();
+                modelo.addColumn("USUARIO");
+                modelo.addColumn("FECHA Y HORA");
+                while (rs.next()) {
+                    Object[] filas = new Object[cantidadCol];
+                    for (int i = 0; i < cantidadCol; i++) {
+                        filas[i] = rs.getObject(i + 1);
+                    }
+                    modelo.addRow(filas);
+                }
+                ps.close();
+                rs.close();
+            }
+        } catch (SQLException e) {
+                System.out.println(e);
+        }
     }
 
     /**
@@ -32,7 +71,7 @@ public class Sesiones extends javax.swing.JFrame {
         jLSes1 = new javax.swing.JLabel();
         jPInferior = new javax.swing.JPanel();
         jSPUltimasSes = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTUltSes = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -41,6 +80,11 @@ public class Sesiones extends javax.swing.JFrame {
         jPSuperior.setLayout(new java.awt.BorderLayout());
 
         jBVolver.setText("VOLVER");
+        jBVolver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBVolverActionPerformed(evt);
+            }
+        });
         jPSuperior.add(jBVolver, java.awt.BorderLayout.WEST);
 
         jLSes1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -51,7 +95,7 @@ public class Sesiones extends javax.swing.JFrame {
 
         jPInferior.setLayout(new java.awt.BorderLayout());
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTUltSes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -62,7 +106,7 @@ public class Sesiones extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jSPUltimasSes.setViewportView(jTable1);
+        jSPUltimasSes.setViewportView(jTUltSes);
 
         jPInferior.add(jSPUltimasSes, java.awt.BorderLayout.CENTER);
 
@@ -72,6 +116,12 @@ public class Sesiones extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jBVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBVolverActionPerformed
+        this.dispose();
+        Menu menu=new Menu();
+        menu.setVisible(true);
+    }//GEN-LAST:event_jBVolverActionPerformed
 
     /**
      * @param args the command line arguments
@@ -115,6 +165,6 @@ public class Sesiones extends javax.swing.JFrame {
     private javax.swing.JPanel jPInferior;
     private javax.swing.JPanel jPSuperior;
     private javax.swing.JScrollPane jSPUltimasSes;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTUltSes;
     // End of variables declaration//GEN-END:variables
 }
