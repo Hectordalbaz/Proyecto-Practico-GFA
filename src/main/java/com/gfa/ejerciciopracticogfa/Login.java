@@ -5,11 +5,18 @@
 package com.gfa.ejerciciopracticogfa;
 
 import static com.gfa.ejerciciopracticogfa.Colores.*;
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -46,6 +53,8 @@ public class Login extends javax.swing.JFrame {
         jLErrorCont.setVisible(false);
         jTFUsuario.setBorder(new JTextField().getBorder());
         jPFCont.setBorder(new JTextField().getBorder());
+         jBIniSes.setBackground(new Color(1, 81, 152));
+        jBIniSes.setForeground(Color.WHITE);
 
     }
 
@@ -96,11 +105,35 @@ public class Login extends javax.swing.JFrame {
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(null, "No se pudieron obtener los datos de registro: " + e, "Atención", JOptionPane.ERROR_MESSAGE);
                 }
-                Menu menu = new Menu();
-                menu.setVisible(true);
-                this.dispose();
-                inicializar();
+                if (EjercicioPracticoGFA.menu.isActive()) {
+                    EjercicioPracticoGFA.menu.toFront();
+                } else {
+                    EjercicioPracticoGFA.menu.setVisible(true);
+                    this.dispose();
+                    inicializar();
+                }
+                Date todayDate = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                String fecHor = sdf.format(todayDate);
+                generarLog(clavedb + " " + nomdb + " " + fecHor+"\n");
             }
+        }
+    }
+
+    public void generarLog(String ultReg) {
+        try {
+            File archivo = new File("Log.txt");
+            if (!archivo.exists()) {
+                archivo.createNewFile();
+            }
+            String datosAnt = new String(Files.readAllBytes(Paths.get("Log.txt")));
+            String textCompl = ultReg + datosAnt;
+            Files.write(Paths.get("Log.txt"), textCompl.getBytes());
+
+            System.out.println("Archivo actualizado correctamente.");
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -144,9 +177,11 @@ public class Login extends javax.swing.JFrame {
         jLIniSes.setText("Iniciar sesión");
         jPanel1.add(jLIniSes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 262, 22));
 
+        jLLogUsuario.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLLogUsuario.setText("Clave de usuario:");
-        jPanel1.add(jLLogUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 27, 100, 22));
+        jPanel1.add(jLLogUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 27, 120, 22));
 
+        jTFUsuario.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jTFUsuario.setPreferredSize(new java.awt.Dimension(200, 30));
         jTFUsuario.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -155,9 +190,11 @@ public class Login extends javax.swing.JFrame {
         });
         jPanel1.add(jTFUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 54, 262, 22));
 
+        jLLogCont.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLLogCont.setText("Contraseña:");
-        jPanel1.add(jLLogCont, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 70, 22));
+        jPanel1.add(jLLogCont, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 90, 22));
 
+        jPFCont.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jPFCont.setPreferredSize(new java.awt.Dimension(200, 30));
         jPFCont.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -166,11 +203,13 @@ public class Login extends javax.swing.JFrame {
         });
         jPanel1.add(jPFCont, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 108, 262, 22));
 
+        jLErrorCont.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLErrorCont.setText("Error");
-        jPanel1.add(jLErrorCont, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 80, -1, 22));
+        jPanel1.add(jLErrorCont, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 80, 40, 22));
 
+        jLErrorUsu.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLErrorUsu.setText("Error");
-        jPanel1.add(jLErrorUsu, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 30, -1, -1));
+        jPanel1.add(jLErrorUsu, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 30, 40, -1));
 
         jBIniSes.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jBIniSes.setText("Iniciar sesión");

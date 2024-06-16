@@ -22,6 +22,7 @@ public class Sesiones extends javax.swing.JFrame {
     private final Connection con = sql.conexion();
     public Sesiones() {
         initComponents();
+        setLocationRelativeTo(null);
         tabla(jTUltSes);
     }
     
@@ -29,7 +30,7 @@ public class Sesiones extends javax.swing.JFrame {
         DefaultTableModel modelo = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column != 1;
+                return false;
             }
         };
         tabla.setModel(modelo);
@@ -118,9 +119,12 @@ public class Sesiones extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBVolverActionPerformed
-        this.dispose();
-        Menu menu=new Menu();
-        menu.setVisible(true);
+        if (EjercicioPracticoGFA.menu.isActive()) {
+                    EjercicioPracticoGFA.menu.toFront();
+                } else {
+                    EjercicioPracticoGFA.menu.setVisible(true);
+                    this.dispose();
+                }
     }//GEN-LAST:event_jBVolverActionPerformed
 
     /**

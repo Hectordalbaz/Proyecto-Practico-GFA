@@ -298,9 +298,13 @@ public class Registro extends javax.swing.JFrame {
     }//GEN-LAST:event_jBGuardarActionPerformed
 
     private void jBCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBCancelarActionPerformed
-        this.dispose();
-        Menu menu = new Menu();
-        menu.setVisible(true);
+        if (EjercicioPracticoGFA.menu.isActive()) {
+                    EjercicioPracticoGFA.menu.toFront();
+                } else {
+                    EjercicioPracticoGFA.menu.setVisible(true);
+                    this.dispose();
+                    inicializar();
+                }
     }//GEN-LAST:event_jBCancelarActionPerformed
 
     /**

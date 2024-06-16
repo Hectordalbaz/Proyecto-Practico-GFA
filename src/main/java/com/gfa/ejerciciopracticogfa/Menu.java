@@ -37,6 +37,7 @@ public class Menu extends javax.swing.JFrame {
 
         Fondo = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
+        jLBienvenida = new javax.swing.JLabel();
         jBRegistros = new javax.swing.JButton();
         jBUltSes = new javax.swing.JButton();
         jBCerrarSes = new javax.swing.JButton();
@@ -44,7 +45,11 @@ public class Menu extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        jPanel1.setLayout(new java.awt.GridLayout(3, 0, 0, 5));
+        jPanel1.setLayout(new java.awt.GridLayout(4, 0, 0, 5));
+
+        jLBienvenida.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLBienvenida.setText("jLabel1");
+        jPanel1.add(jLBienvenida);
 
         jBRegistros.setText("Registrar nuevo usuario");
         jBRegistros.addActionListener(new java.awt.event.ActionListener() {
@@ -91,9 +96,12 @@ public class Menu extends javax.swing.JFrame {
 
         try {
             con.close();
+             if (EjercicioPracticoGFA.reg.isActive()||EjercicioPracticoGFA.ses.isActive()) {
+                    EjercicioPracticoGFA.reg.dispose();
+                    EjercicioPracticoGFA.ses.dispose();
+                }
             this.dispose();
-            Login log = new Login();
-            log.setVisible(true);
+            EjercicioPracticoGFA.login.setVisible(true);
         } catch (SQLException ex) {
             Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -139,6 +147,7 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton jBCerrarSes;
     private javax.swing.JButton jBRegistros;
     private javax.swing.JButton jBUltSes;
+    private javax.swing.JLabel jLBienvenida;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
