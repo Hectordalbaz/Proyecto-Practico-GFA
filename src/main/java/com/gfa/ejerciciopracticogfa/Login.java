@@ -5,7 +5,13 @@
 package com.gfa.ejerciciopracticogfa;
 
 import static com.gfa.ejerciciopracticogfa.Colores.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
@@ -18,11 +24,16 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Login
      */
     public boolean user, pass;
+    public Connection con;
+    String host = "localhost", puerto = "3306", bd = "usuarios", usuario = "root", cont = "root";
+    String clavedb,contdb,nomdb;
+    
 
     public Login() {
         initComponents();
         inicializar();
         setLocationRelativeTo(null);
+
     }
 
     //Limpiar los campos, ocultar etiquetas y regresar a colores originales los bordes
@@ -37,20 +48,56 @@ public class Login extends javax.swing.JFrame {
         jPFCont.setBorder(new JTextField().getBorder());
 
     }
+    
+    public void obtenerDatos(String clave){
+         try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + puerto + "/" + bd + "", usuario, cont);
+            if (con != null) {
+                ResultSet rs;
+                try (PreparedStatement ps = con.prepareStatement("SELECT clave,nombre,contrasena FROM Usuarios WHERE clave=\""+clave+"\";")) {
+                    rs = ps.executeQuery();
+                    while (rs.next()) {
+                        clavedb=rs.getString("clave");
+                        nomdb=rs.getString("nombre");
+                        contdb=rs.getString("contrasena");
+                    }
+                }
+                rs.close();
+                con.close();
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "No se pudieron obtener los datos de registro: " + e, "Atención", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     //Indicar los campos que son obligatorios
     public void iniciarSesion() {
-        if (jTFUsuario.getText().isEmpty()) {
-            user = false;
-            jLErrorUsu.setVisible(true);
-            jLErrorUsu.setText("*Campo obligatorio");
-            jTFUsuario.setBorder(BorderFactory.createLineBorder(error, 2));
-        }
-        if (jPFCont.getText().isEmpty()) {
-            pass = false;
-            jLErrorCont.setVisible(true);
-            jLErrorCont.setText("*Campo obligatorio");
-            jPFCont.setBorder(BorderFactory.createLineBorder(error, 2));
+        String usu=jTFUsuario.getText(),contrasena=jPFCont.getText();
+        if (usu.isEmpty() || contrasena.isEmpty()) {
+            if (jTFUsuario.getText().isEmpty()) {
+                jLErrorUsu.setVisible(true);
+                jLErrorUsu.setText("*Campo obligatorio");
+                jTFUsuario.setBorder(BorderFactory.createLineBorder(error, 2));
+            }
+            if (jPFCont.getText().isEmpty()) {
+                jLErrorCont.setVisible(true);
+                jLErrorCont.setText("*Campo obligatorio");
+                jPFCont.setBorder(BorderFactory.createLineBorder(error, 2));
+            }
+        }else{
+            obtenerDatos(usu);
+            if(!usu.equals(clavedb)){
+                 jLErrorUsu.setVisible(true);
+                jLErrorUsu.setText("*El usuario no existe");
+                jTFUsuario.setBorder(BorderFactory.createLineBorder(error, 2));
+            } else if(usu.equals(clavedb) && !contrasena.equals(clavedb)){
+                 jLErrorCont.setVisible(true);
+                jLErrorCont.setText("*La contraseña es incorrecta");
+                jPFCont.setBorder(BorderFactory.createLineBorder(error, 2));      
+            }else if(usu.equals(clavedb) && contrasena.equals(clavedb)){
+                 JOptionPane.showMessageDialog(null, "!Bienvenido!: " + nomdb, "Atención", JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 
