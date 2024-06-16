@@ -4,6 +4,10 @@
  */
 package com.gfa.ejerciciopracticogfa;
 
+import static com.gfa.ejerciciopracticogfa.Colores.*;
+import javax.swing.BorderFactory;
+import javax.swing.JTextField;
+
 /**
  *
  * @author Hecto
@@ -13,8 +17,41 @@ public class Login extends javax.swing.JFrame {
     /**
      * Creates new form Login
      */
+    public boolean user, pass;
+
     public Login() {
         initComponents();
+        inicializar();
+        setLocationRelativeTo(null);
+    }
+
+    //Limpiar los campos, ocultar etiquetas y regresar a colores originales los bordes
+    public void inicializar() {
+        jTFUsuario.setText("");
+        jPFCont.setText("");
+        jLErrorUsu.setForeground(error);
+        jLErrorCont.setForeground(error);
+        jLErrorUsu.setVisible(false);
+        jLErrorCont.setVisible(false);
+        jTFUsuario.setBorder(new JTextField().getBorder());
+        jPFCont.setBorder(new JTextField().getBorder());
+
+    }
+
+    //Indicar los campos que son obligatorios
+    public void iniciarSesion() {
+        if (jTFUsuario.getText().isEmpty()) {
+            user = false;
+            jLErrorUsu.setVisible(true);
+            jLErrorUsu.setText("*Campo obligatorio");
+            jTFUsuario.setBorder(BorderFactory.createLineBorder(error, 2));
+        }
+        if (jPFCont.getText().isEmpty()) {
+            pass = false;
+            jLErrorCont.setVisible(true);
+            jLErrorCont.setText("*Campo obligatorio");
+            jPFCont.setBorder(BorderFactory.createLineBorder(error, 2));
+        }
     }
 
     /**
@@ -33,60 +70,136 @@ public class Login extends javax.swing.JFrame {
         jTFUsuario = new javax.swing.JTextField();
         jLLogCont = new javax.swing.JLabel();
         jPFCont = new javax.swing.JPasswordField();
-        jSeparator1 = new javax.swing.JSeparator();
         jBIniSes = new javax.swing.JButton();
+        jLErrorCont = new javax.swing.JLabel();
+        jLErrorUsu = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         Fondo.setFocusable(false);
         Fondo.setOpaque(false);
+        Fondo.setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setLayout(new java.awt.GridLayout(7, 0, 0, 5));
+        jPanel1.setPreferredSize(new java.awt.Dimension(300, 184));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jLIniSes.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLIniSes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLIniSes.setText("Iniciar sesión");
-        jPanel1.add(jLIniSes);
+        jPanel1.add(jLIniSes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 262, 22));
 
-        jLLogUsuario.setText("Clave de usuario");
-        jPanel1.add(jLLogUsuario);
+        jLLogUsuario.setText("Clave de usuario:");
+        jPanel1.add(jLLogUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 27, 100, 22));
 
-        jTFUsuario.setText("jTextField1");
         jTFUsuario.setPreferredSize(new java.awt.Dimension(200, 30));
-        jPanel1.add(jTFUsuario);
+        jTFUsuario.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTFUsuarioFocusGained(evt);
+            }
+        });
+        jPanel1.add(jTFUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 54, 262, 22));
 
         jLLogCont.setText("Contraseña:");
-        jPanel1.add(jLLogCont);
+        jPanel1.add(jLLogCont, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 70, 22));
 
-        jPFCont.setText("jPasswordField1");
         jPFCont.setPreferredSize(new java.awt.Dimension(200, 30));
-        jPanel1.add(jPFCont);
-
-        jSeparator1.setEnabled(false);
-        jPanel1.add(jSeparator1);
+        jPFCont.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jPFContFocusGained(evt);
+            }
+        });
+        jPanel1.add(jPFCont, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 108, 262, 22));
 
         jBIniSes.setText("Iniciar sesión");
-        jPanel1.add(jBIniSes);
+        jBIniSes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBIniSesActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jBIniSes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 162, 262, 22));
 
-        javax.swing.GroupLayout FondoLayout = new javax.swing.GroupLayout(Fondo);
-        Fondo.setLayout(FondoLayout);
-        FondoLayout.setHorizontalGroup(
-            FondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(FondoLayout.createSequentialGroup()
-                .addGap(103, 103, 103)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(159, 159, 159))
+        jLErrorCont.setText("Error");
+        jPanel1.add(jLErrorCont, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 80, -1, 22));
+
+        jLErrorUsu.setText("Error");
+        jPanel1.add(jLErrorUsu, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 30, -1, -1));
+
+        Fondo.add(jPanel1, java.awt.BorderLayout.CENTER);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 462, Short.MAX_VALUE)
         );
-        FondoLayout.setVerticalGroup(
-            FondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(FondoLayout.createSequentialGroup()
-                .addGap(62, 62, 62)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(75, 75, 75))
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
+
+        Fondo.add(jPanel2, java.awt.BorderLayout.PAGE_START);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 462, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        Fondo.add(jPanel3, java.awt.BorderLayout.PAGE_END);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 184, Short.MAX_VALUE)
+        );
+
+        Fondo.add(jPanel4, java.awt.BorderLayout.LINE_END);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 184, Short.MAX_VALUE)
+        );
+
+        Fondo.add(jPanel5, java.awt.BorderLayout.LINE_START);
 
         getContentPane().add(Fondo, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jBIniSesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBIniSesActionPerformed
+        iniciarSesion();
+    }//GEN-LAST:event_jBIniSesActionPerformed
+    //Regresa el color original al ser enfocado
+    private void jTFUsuarioFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTFUsuarioFocusGained
+        jLErrorUsu.setVisible(false);
+        jTFUsuario.setBorder(new JTextField().getBorder());
+    }//GEN-LAST:event_jTFUsuarioFocusGained
+    //Regresa el color original al ser enfocado
+    private void jPFContFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPFContFocusGained
+        jLErrorCont.setVisible(false);
+        jPFCont.setBorder(new JTextField().getBorder());
+    }//GEN-LAST:event_jPFContFocusGained
 
     /**
      * @param args the command line arguments
@@ -126,12 +239,17 @@ public class Login extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Fondo;
     private javax.swing.JButton jBIniSes;
+    private javax.swing.JLabel jLErrorCont;
+    private javax.swing.JLabel jLErrorUsu;
     private javax.swing.JLabel jLIniSes;
     private javax.swing.JLabel jLLogCont;
     private javax.swing.JLabel jLLogUsuario;
     private javax.swing.JPasswordField jPFCont;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JTextField jTFUsuario;
     // End of variables declaration//GEN-END:variables
 }
