@@ -4,12 +4,16 @@
  */
 package com.gfa.ejerciciopracticogfa;
 
+import static com.gfa.ejerciciopracticogfa.Colores.*;
+import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -23,6 +27,12 @@ public class Sesiones extends javax.swing.JFrame {
     public Sesiones() {
         initComponents();
         setLocationRelativeTo(null);
+         jBVolver.setBackground(new Color(1, 81, 152));
+        jBVolver.setForeground(Color.WHITE);
+          getContentPane().setBackground(fondo);
+        jSPUltimasSes.getViewport().setBackground(fontab);
+        jTUltSes.setSelectionBackground(fonsel);
+        jTUltSes.setSelectionForeground(letsel);
         tabla(jTUltSes);
     }
     
@@ -52,6 +62,14 @@ public class Sesiones extends javax.swing.JFrame {
                 ps.close();
                 rs.close();
             }
+            DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
+            headerRenderer.setBackground(enctab);
+            headerRenderer.setForeground(letenc);
+            headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+            for (int i = 0; i < tabla.getModel().getColumnCount(); i++) {
+                tabla.getColumnModel().getColumn(i).setHeaderRenderer(headerRenderer);
+            }
+            tabla.setDefaultRenderer(Object.class, new ColorTabla());
         } catch (SQLException e) {
                 System.out.println(e);
         }
@@ -80,6 +98,7 @@ public class Sesiones extends javax.swing.JFrame {
 
         jPSuperior.setLayout(new java.awt.BorderLayout());
 
+        jBVolver.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jBVolver.setText("VOLVER");
         jBVolver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -88,6 +107,7 @@ public class Sesiones extends javax.swing.JFrame {
         });
         jPSuperior.add(jBVolver, java.awt.BorderLayout.WEST);
 
+        jLSes1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLSes1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLSes1.setText("ULTIMAS SESIONES");
         jPSuperior.add(jLSes1, java.awt.BorderLayout.CENTER);
@@ -96,6 +116,7 @@ public class Sesiones extends javax.swing.JFrame {
 
         jPInferior.setLayout(new java.awt.BorderLayout());
 
+        jTUltSes.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jTUltSes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -119,10 +140,10 @@ public class Sesiones extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBVolverActionPerformed
-        if (EjercicioPracticoGFA.menu.isActive()) {
-                    EjercicioPracticoGFA.menu.toFront();
+        if (Menu.menu.isActive()) {
+                    Menu.menu.toFront();
                 } else {
-                    EjercicioPracticoGFA.menu.setVisible(true);
+                    Menu.menu.setVisible(true);
                     this.dispose();
                 }
     }//GEN-LAST:event_jBVolverActionPerformed

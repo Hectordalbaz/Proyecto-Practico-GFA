@@ -4,6 +4,8 @@
  */
 package com.gfa.ejerciciopracticogfa;
 
+import static com.gfa.ejerciciopracticogfa.Colores.*;
+import java.awt.Color;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -14,6 +16,11 @@ import java.util.logging.Logger;
  * @author Hecto
  */
 public class Menu extends javax.swing.JFrame {
+    
+    public static Login login = new Login();
+    public static Menu menu = new Menu();
+    public static Registro reg = new Registro();
+    public static Sesiones ses = new Sesiones();
 
     private final conexionBD sql = new conexionBD();
     private final Connection con = sql.conexion();
@@ -25,6 +32,12 @@ public class Menu extends javax.swing.JFrame {
     public Menu() {
         initComponents();
         setLocationRelativeTo(null);
+        jBRegistros.setBackground(agregar);
+        jBRegistros.setForeground(Color.white);
+        jBUltSes.setBackground(guardar);
+        jBUltSes.setForeground(Color.white);
+        jBCerrarSes.setBackground(cancelar);
+        jBCerrarSes.setForeground(Color.white);
       
     }
     
@@ -50,21 +63,22 @@ public class Menu extends javax.swing.JFrame {
         jBUltSes = new javax.swing.JButton();
         jBCerrarSes = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
         jPanel1.setLayout(new java.awt.GridLayout(6, 0, 0, 10));
 
-        jLBienvenida.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLBienvenida.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLBienvenida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLBienvenida.setText("jLabel1");
         jPanel1.add(jLBienvenida);
 
-        jLBienvenida1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLBienvenida1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLBienvenida1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLBienvenida1.setText("¿Que quieres hacer hoy?");
         jPanel1.add(jLBienvenida1);
 
+        jBRegistros.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jBRegistros.setText("Registrar nuevo usuario");
         jBRegistros.setPreferredSize(new java.awt.Dimension(200, 40));
         jBRegistros.addActionListener(new java.awt.event.ActionListener() {
@@ -74,6 +88,7 @@ public class Menu extends javax.swing.JFrame {
         });
         jPanel1.add(jBRegistros);
 
+        jBUltSes.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jBUltSes.setText("Consultar últimos 10\n inicios de sesión");
         jBUltSes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -82,6 +97,7 @@ public class Menu extends javax.swing.JFrame {
         });
         jPanel1.add(jBUltSes);
 
+        jBCerrarSes.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jBCerrarSes.setText("Cerrar sesión");
         jBCerrarSes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -111,12 +127,12 @@ public class Menu extends javax.swing.JFrame {
 
         try {
             con.close();
-             if (EjercicioPracticoGFA.reg.isActive()||EjercicioPracticoGFA.ses.isActive()) {
-                    EjercicioPracticoGFA.reg.dispose();
-                    EjercicioPracticoGFA.ses.dispose();
+             if (Menu.reg.isActive()||Menu.ses.isActive()) {
+                    Menu.reg.dispose();
+                    Menu.ses.dispose();
                 }
             this.dispose();
-            EjercicioPracticoGFA.login.setVisible(true);
+            Menu.login.setVisible(true);
         } catch (SQLException ex) {
             Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
         }

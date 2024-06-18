@@ -4,9 +4,12 @@
  */
 package com.gfa.ejerciciopracticogfa;
 
+import static com.gfa.ejerciciopracticogfa.Colores.cancelar;
 import static com.gfa.ejerciciopracticogfa.Colores.error;
+import static com.gfa.ejerciciopracticogfa.Colores.guardar;
 import com.password4j.Hash;
 import com.password4j.Password;
+import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,6 +40,15 @@ public class Registro extends javax.swing.JFrame {
         jLErrorCont.setVisible(false);
         jLErrorClave.setVisible(false);
         jLErrorCont.setVisible(false);
+        jTFClave.setText("");
+        jTFNombre.setText("");
+        jTFCont1.setText("");
+        jTFCont2.setText("");
+         jBGuardar.setBackground(guardar);
+        jBGuardar.setForeground(Color.white);
+        jBCancelar.setBackground(cancelar);
+        jBCancelar.setForeground(Color.white);
+      
     }
 
     public boolean validarClave(String clave) {
@@ -92,6 +104,7 @@ public class Registro extends javax.swing.JFrame {
                     System.out.println(e);
                 }
                     JOptionPane.showMessageDialog(null, "El usuario se registro con exito!", "Atención", JOptionPane.INFORMATION_MESSAGE);
+                    inicializar();
             }
         }
     }
@@ -133,21 +146,26 @@ public class Registro extends javax.swing.JFrame {
 
         jPanel1.setLayout(new java.awt.GridLayout(13, 0, 0, 5));
 
+        jLRegTitulo.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLRegTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLRegTitulo.setText("REGISTRAR USUARIO");
         jPanel1.add(jLRegTitulo);
 
         jPClave.setLayout(new java.awt.BorderLayout());
 
+        jLRegClave.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLRegClave.setText("Clave de usuario:");
         jPClave.add(jLRegClave, java.awt.BorderLayout.WEST);
 
+        jLErrorClave.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLErrorClave.setForeground(new java.awt.Color(204, 0, 0));
         jLErrorClave.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLErrorClave.setText("Error");
         jPClave.add(jLErrorClave, java.awt.BorderLayout.CENTER);
 
         jPanel1.add(jPClave);
 
+        jTFClave.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jTFClave.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 jTFClaveFocusGained(evt);
@@ -157,15 +175,19 @@ public class Registro extends javax.swing.JFrame {
 
         jPNombre.setLayout(new java.awt.BorderLayout());
 
+        jLRegNombre.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLRegNombre.setText("Nombre de usuario:");
         jPNombre.add(jLRegNombre, java.awt.BorderLayout.WEST);
 
+        jLErrorNombre.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLErrorNombre.setForeground(new java.awt.Color(204, 0, 0));
         jLErrorNombre.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLErrorNombre.setText("Error");
         jPNombre.add(jLErrorNombre, java.awt.BorderLayout.CENTER);
 
         jPanel1.add(jPNombre);
 
+        jTFNombre.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jTFNombre.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 jTFNombreFocusGained(evt);
@@ -175,15 +197,19 @@ public class Registro extends javax.swing.JFrame {
 
         jPCont1.setLayout(new java.awt.BorderLayout());
 
+        jLRegCont1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLRegCont1.setText("Contraseña:");
         jPCont1.add(jLRegCont1, java.awt.BorderLayout.WEST);
 
+        jLErrorCont.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLErrorCont.setForeground(new java.awt.Color(204, 0, 0));
         jLErrorCont.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLErrorCont.setText("Error");
         jPCont1.add(jLErrorCont, java.awt.BorderLayout.CENTER);
 
         jPanel1.add(jPCont1);
 
+        jTFCont1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jTFCont1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 jTFCont1FocusGained(evt);
@@ -191,9 +217,11 @@ public class Registro extends javax.swing.JFrame {
         });
         jPanel1.add(jTFCont1);
 
+        jLRegCont2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLRegCont2.setText("Confirmar contraseña:");
         jPanel1.add(jLRegCont2);
 
+        jTFCont2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jTFCont2.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 jTFCont2FocusGained(evt);
@@ -204,10 +232,12 @@ public class Registro extends javax.swing.JFrame {
         jPEspacio.setLayout(new java.awt.BorderLayout());
         jPanel1.add(jPEspacio);
 
-        jPBotones.setPreferredSize(new java.awt.Dimension(150, 30));
+        jPBotones.setPreferredSize(new java.awt.Dimension(150, 40));
         jPBotones.setLayout(new java.awt.BorderLayout(0, 5));
 
+        jBGuardar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jBGuardar.setText("Guardar");
+        jBGuardar.setPreferredSize(new java.awt.Dimension(100, 40));
         jBGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBGuardarActionPerformed(evt);
@@ -215,7 +245,9 @@ public class Registro extends javax.swing.JFrame {
         });
         jPBotones.add(jBGuardar, java.awt.BorderLayout.WEST);
 
+        jBCancelar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jBCancelar.setText("Cancelar");
+        jBCancelar.setPreferredSize(new java.awt.Dimension(100, 40));
         jBCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBCancelarActionPerformed(evt);
@@ -238,8 +270,8 @@ public class Registro extends javax.swing.JFrame {
             FondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(FondoLayout.createSequentialGroup()
                 .addGap(40, 40, 40)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(53, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         getContentPane().add(Fondo, java.awt.BorderLayout.CENTER);
@@ -272,10 +304,10 @@ public class Registro extends javax.swing.JFrame {
     }//GEN-LAST:event_jBGuardarActionPerformed
 
     private void jBCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBCancelarActionPerformed
-        if (EjercicioPracticoGFA.menu.isActive()) {
-                    EjercicioPracticoGFA.menu.toFront();
+        if (Menu.menu.isActive()) {
+                    Menu.menu.toFront();
                 } else {
-                    EjercicioPracticoGFA.menu.setVisible(true);
+                    Menu.menu.setVisible(true);
                     this.dispose();
                     inicializar();
                 }
@@ -318,8 +350,8 @@ public class Registro extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Fondo;
-    private javax.swing.JButton jBCancelar;
-    private javax.swing.JButton jBGuardar;
+    public static javax.swing.JButton jBCancelar;
+    public static javax.swing.JButton jBGuardar;
     private javax.swing.JLabel jLErrorClave;
     private javax.swing.JLabel jLErrorCont;
     private javax.swing.JLabel jLErrorNombre;

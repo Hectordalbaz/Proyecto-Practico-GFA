@@ -108,11 +108,11 @@ public class Login extends javax.swing.JFrame {
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(null, "No se pudieron obtener los datos de registro: " + e, "Atención", JOptionPane.ERROR_MESSAGE);
                 }
-                if (EjercicioPracticoGFA.menu.isActive()) {
-                    EjercicioPracticoGFA.menu.toFront();
+                if (Menu.menu.isActive()) {
+                    Menu.menu.toFront();
                 } else {
-                    EjercicioPracticoGFA.menu.setDato(nomdb);
-                    EjercicioPracticoGFA.menu.setVisible(true);
+                    Menu.menu.setDato(nomdb);
+                    Menu.menu.setVisible(true);
            
                     this.dispose();
                     inicializar();
