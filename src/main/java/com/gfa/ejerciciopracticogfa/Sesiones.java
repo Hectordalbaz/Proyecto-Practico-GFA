@@ -36,7 +36,7 @@ public class Sesiones extends javax.swing.JFrame {
         tabla.setModel(modelo);
         try {
             if (con != null) {
-                PreparedStatement ps = con.prepareStatement("SELECT usuarios.nombre,sesiones.fecha_ini_ses FROM usuarios RIGHT JOIN Sesiones ON (usuarios.id_usuario=sesiones.id_usuario) ORDER BY sesiones.fecha_ini_ses DESC LIMIT 10;");
+                PreparedStatement ps = con.prepareStatement("SELECT usuarios.nombre,sesiones.fec_hor_ini_ses FROM usuarios RIGHT JOIN Sesiones ON (usuarios.id_usuario=sesiones.id_usuario) ORDER BY sesiones.fec_hor_ini_ses DESC LIMIT 10;");
                 ResultSet rs = ps.executeQuery();
                 ResultSetMetaData rsMd = rs.getMetaData();
                 int cantidadCol = rsMd.getColumnCount();

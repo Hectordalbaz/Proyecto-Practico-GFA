@@ -17,6 +17,7 @@ public class Menu extends javax.swing.JFrame {
 
     private final conexionBD sql = new conexionBD();
     private final Connection con = sql.conexion();
+    private String dato;
 
     /**
      * Creates new form Menu
@@ -24,6 +25,12 @@ public class Menu extends javax.swing.JFrame {
     public Menu() {
         initComponents();
         setLocationRelativeTo(null);
+      
+    }
+    
+    public void setDato(String dato){
+        this.dato=dato;
+          jLBienvenida.setText("Hola "+dato+"!");
     }
 
     /**
@@ -38,6 +45,7 @@ public class Menu extends javax.swing.JFrame {
         Fondo = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLBienvenida = new javax.swing.JLabel();
+        jLBienvenida1 = new javax.swing.JLabel();
         jBRegistros = new javax.swing.JButton();
         jBUltSes = new javax.swing.JButton();
         jBCerrarSes = new javax.swing.JButton();
@@ -45,13 +53,20 @@ public class Menu extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        jPanel1.setLayout(new java.awt.GridLayout(4, 0, 0, 5));
+        jPanel1.setLayout(new java.awt.GridLayout(6, 0, 0, 10));
 
         jLBienvenida.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLBienvenida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLBienvenida.setText("jLabel1");
         jPanel1.add(jLBienvenida);
 
+        jLBienvenida1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLBienvenida1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLBienvenida1.setText("¿Que quieres hacer hoy?");
+        jPanel1.add(jLBienvenida1);
+
         jBRegistros.setText("Registrar nuevo usuario");
+        jBRegistros.setPreferredSize(new java.awt.Dimension(200, 40));
         jBRegistros.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBRegistrosActionPerformed(evt);
@@ -147,7 +162,8 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton jBCerrarSes;
     private javax.swing.JButton jBRegistros;
     private javax.swing.JButton jBUltSes;
-    private javax.swing.JLabel jLBienvenida;
+    public javax.swing.JLabel jLBienvenida;
+    public javax.swing.JLabel jLBienvenida1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

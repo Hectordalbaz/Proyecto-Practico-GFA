@@ -5,6 +5,7 @@
 package com.gfa.ejerciciopracticogfa;
 
 import static com.gfa.ejerciciopracticogfa.Colores.*;
+import com.password4j.Password;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class Login extends javax.swing.JFrame {
      */
     public boolean user, pass;
 
-    String clavedb, contdb, nomdb, idusu;
+    public static String clavedb, contdb, nomdb, idusu;
     private final conexionBD sql = new conexionBD();
     private final Connection con = sql.conexion();
 
@@ -63,7 +64,7 @@ public class Login extends javax.swing.JFrame {
             try (PreparedStatement ps = con.prepareStatement("SELECT id_usuario,clave,nombre,contrasena FROM Usuarios WHERE clave=\"" + clave + "\";")) {
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
-                    idusu = rs.getString("id_usuario");
+                    idusu=rs.getString("id_usuario");
                     clavedb = rs.getString("clave");
                     nomdb = rs.getString("nombre");
                     contdb = rs.getString("contrasena");
@@ -91,16 +92,18 @@ public class Login extends javax.swing.JFrame {
             }
         } else {
             obtenerDatos(usu);
+            
+            boolean verificar=Password.check(contrasena, contdb).withBcrypt();
             if (!usu.equals(clavedb)) {
                 jLErrorUsu.setVisible(true);
                 jLErrorUsu.setText("*El usuario no existe");
                 jTFUsuario.setBorder(BorderFactory.createLineBorder(error, 2));
-            } else if (usu.equals(clavedb) && !contrasena.equals(contdb)) {
+            } else if (usu.equals(clavedb) && !verificar) {
                 jLErrorCont.setVisible(true);
                 jLErrorCont.setText("*La contraseña es incorrecta");
                 jPFCont.setBorder(BorderFactory.createLineBorder(error, 2));
-            } else if (usu.equals(clavedb) && contrasena.equals(contdb)) {
-                try (PreparedStatement ps = con.prepareStatement("INSERT INTO Sesiones(id_usuario,fecha_ini_ses) VALUES (" + idusu + ",now());")) {
+            } else if (usu.equals(clavedb) && verificar) {
+                try (PreparedStatement ps = con.prepareStatement("INSERT INTO Sesiones(id_usuario,fec_hor_ini_ses) VALUES (" + idusu + ",now());")) {
                     ps.executeUpdate();
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(null, "No se pudieron obtener los datos de registro: " + e, "Atención", JOptionPane.ERROR_MESSAGE);
@@ -108,7 +111,9 @@ public class Login extends javax.swing.JFrame {
                 if (EjercicioPracticoGFA.menu.isActive()) {
                     EjercicioPracticoGFA.menu.toFront();
                 } else {
+                    EjercicioPracticoGFA.menu.setDato(nomdb);
                     EjercicioPracticoGFA.menu.setVisible(true);
+           
                     this.dispose();
                     inicializar();
                 }
@@ -149,12 +154,14 @@ public class Login extends javax.swing.JFrame {
         Fondo = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLIniSes = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
         jLLogUsuario = new javax.swing.JLabel();
-        jTFUsuario = new javax.swing.JTextField();
-        jLLogCont = new javax.swing.JLabel();
-        jPFCont = new javax.swing.JPasswordField();
-        jLErrorCont = new javax.swing.JLabel();
         jLErrorUsu = new javax.swing.JLabel();
+        jTFUsuario = new javax.swing.JTextField();
+        jPanel8 = new javax.swing.JPanel();
+        jLLogCont = new javax.swing.JLabel();
+        jLErrorCont = new javax.swing.JLabel();
+        jPFCont = new javax.swing.JPasswordField();
         jPanel6 = new javax.swing.JPanel();
         jBIniSes = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
@@ -170,16 +177,25 @@ public class Login extends javax.swing.JFrame {
         Fondo.setLayout(new java.awt.BorderLayout());
 
         jPanel1.setPreferredSize(new java.awt.Dimension(300, 184));
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel1.setLayout(new java.awt.GridLayout(6, 0, 0, 5));
 
         jLIniSes.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jLIniSes.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLIniSes.setText("Iniciar sesión");
-        jPanel1.add(jLIniSes, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 262, 22));
+        jPanel1.add(jLIniSes);
+
+        jPanel7.setLayout(new java.awt.BorderLayout());
 
         jLLogUsuario.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLLogUsuario.setText("Clave de usuario:");
-        jPanel1.add(jLLogUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 27, 120, 22));
+        jPanel7.add(jLLogUsuario, java.awt.BorderLayout.WEST);
+
+        jLErrorUsu.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLErrorUsu.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLErrorUsu.setText("Error");
+        jPanel7.add(jLErrorUsu, java.awt.BorderLayout.CENTER);
+
+        jPanel1.add(jPanel7);
 
         jTFUsuario.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jTFUsuario.setPreferredSize(new java.awt.Dimension(200, 30));
@@ -188,11 +204,20 @@ public class Login extends javax.swing.JFrame {
                 jTFUsuarioFocusGained(evt);
             }
         });
-        jPanel1.add(jTFUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 54, 262, 22));
+        jPanel1.add(jTFUsuario);
+
+        jPanel8.setLayout(new java.awt.BorderLayout());
 
         jLLogCont.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLLogCont.setText("Contraseña:");
-        jPanel1.add(jLLogCont, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 90, 22));
+        jPanel8.add(jLLogCont, java.awt.BorderLayout.WEST);
+
+        jLErrorCont.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLErrorCont.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLErrorCont.setText("Error");
+        jPanel8.add(jLErrorCont, java.awt.BorderLayout.CENTER);
+
+        jPanel1.add(jPanel8);
 
         jPFCont.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jPFCont.setPreferredSize(new java.awt.Dimension(200, 30));
@@ -201,19 +226,12 @@ public class Login extends javax.swing.JFrame {
                 jPFContFocusGained(evt);
             }
         });
-        jPanel1.add(jPFCont, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 108, 262, 22));
-
-        jLErrorCont.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLErrorCont.setText("Error");
-        jPanel1.add(jLErrorCont, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 80, 40, 22));
-
-        jLErrorUsu.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLErrorUsu.setText("Error");
-        jPanel1.add(jLErrorUsu, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 30, 40, -1));
+        jPanel1.add(jPFCont);
 
         jBIniSes.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jBIniSes.setText("Iniciar sesión");
-        jBIniSes.setPreferredSize(new java.awt.Dimension(150, 30));
+        jBIniSes.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jBIniSes.setPreferredSize(new java.awt.Dimension(150, 40));
         jBIniSes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBIniSesActionPerformed(evt);
@@ -221,7 +239,7 @@ public class Login extends javax.swing.JFrame {
         });
         jPanel6.add(jBIniSes);
 
-        jPanel1.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, 260, -1));
+        jPanel1.add(jPanel6);
 
         Fondo.add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -229,7 +247,7 @@ public class Login extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 462, Short.MAX_VALUE)
+            .addGap(0, 476, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -242,7 +260,7 @@ public class Login extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 462, Short.MAX_VALUE)
+            .addGap(0, 476, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -259,7 +277,7 @@ public class Login extends javax.swing.JFrame {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 184, Short.MAX_VALUE)
+            .addGap(0, 287, Short.MAX_VALUE)
         );
 
         Fondo.add(jPanel4, java.awt.BorderLayout.LINE_END);
@@ -272,7 +290,7 @@ public class Login extends javax.swing.JFrame {
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 184, Short.MAX_VALUE)
+            .addGap(0, 287, Short.MAX_VALUE)
         );
 
         Fondo.add(jPanel5, java.awt.BorderLayout.LINE_START);
@@ -346,6 +364,8 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JTextField jTFUsuario;
     // End of variables declaration//GEN-END:variables
 }

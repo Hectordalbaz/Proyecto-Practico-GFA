@@ -5,6 +5,8 @@
 package com.gfa.ejerciciopracticogfa;
 
 import static com.gfa.ejerciciopracticogfa.Colores.error;
+import com.password4j.Hash;
+import com.password4j.Password;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,7 +37,6 @@ public class Registro extends javax.swing.JFrame {
         jLErrorCont.setVisible(false);
         jLErrorClave.setVisible(false);
         jLErrorCont.setVisible(false);
-        lista();
     }
 
     public boolean validarClave(String clave) {
@@ -83,39 +84,18 @@ public class Registro extends javax.swing.JFrame {
                 jTFCont1.setBorder(BorderFactory.createLineBorder(error, 2));
                 jTFCont2.setBorder(BorderFactory.createLineBorder(error, 2));
             } else {
-                try (PreparedStatement ps = con.prepareStatement("INSERT INTO Usuarios(clave,nombre,contrasena,Estado,Fec_Hor_Creacion,Fec_Hor_Ult_Mod,Usu_Ult_Mod) VALUES (\"" + clave + "\",\"" + nombre + "\",\"" + cont1 + "\",true,now(),now(),\"" + clave + "\");")) {
+                Hash cifrado= Password.hash(cont1).withBcrypt();
+                try (PreparedStatement ps = con.prepareStatement("INSERT INTO Usuarios(clave,nombre,contrasena,Estado,Fec_Hor_Creacion,Fec_Hor_Ult_Mod,Usu_Ult_Mod) VALUES (\"" + clave + "\",\"" + nombre + "\",\"" + cifrado.getResult() + "\",true,now(),now(),\"" + clave + "\");")) {
                     ps.executeUpdate();
                     ps.close();
                 } catch (SQLException e) {
                     System.out.println(e);
                 }
-                Listas rol = (Listas) jCBRoles.getSelectedItem();
-                try (PreparedStatement ps = con.prepareStatement("INSERT INTO Roles_Usuarios(id_rol,id_usuario, Fec_Hor_Creacion,Fec_Hor_Ult_Mod) VALUES (" + rol.getID() + ",(SELECT id_usuario FROM USUARIOS WHERE clave=\"" + clave + "\"),now(),now());")) {
-                    ps.executeUpdate();
-                    ps.close();
                     JOptionPane.showMessageDialog(null, "El usuario se registro con exito!", "Atención", JOptionPane.INFORMATION_MESSAGE);
-                } catch (SQLException e) {
-                    System.out.println(e);
-                }
             }
         }
     }
 
-    public void lista() {
-        DefaultComboBoxModel value;
-        value = new DefaultComboBoxModel();
-        jCBRoles.setModel(value);
-        if (con != null) {
-            try (PreparedStatement ps = con.prepareStatement("SELECT id_rol,Nombre FROM roles;")) {
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    value.addElement(new Listas(rs.getString(2), rs.getString(1)));
-                }
-                rs.close();
-            } catch (SQLException e) {
-            }
-        }
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -143,17 +123,17 @@ public class Registro extends javax.swing.JFrame {
         jTFCont1 = new javax.swing.JTextField();
         jLRegCont2 = new javax.swing.JLabel();
         jTFCont2 = new javax.swing.JTextField();
-        jLRol = new javax.swing.JLabel();
-        jCBRoles = new javax.swing.JComboBox<>();
         jPEspacio = new javax.swing.JPanel();
         jPBotones = new javax.swing.JPanel();
         jBGuardar = new javax.swing.JButton();
         jBCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jPanel1.setLayout(new java.awt.GridLayout(13, 0, 0, 5));
 
+        jLRegTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLRegTitulo.setText("REGISTRAR USUARIO");
         jPanel1.add(jLRegTitulo);
 
@@ -221,12 +201,6 @@ public class Registro extends javax.swing.JFrame {
         });
         jPanel1.add(jTFCont2);
 
-        jLRol.setText("Rol:");
-        jPanel1.add(jLRol);
-
-        jCBRoles.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel1.add(jCBRoles);
-
         jPEspacio.setLayout(new java.awt.BorderLayout());
         jPanel1.add(jPEspacio);
 
@@ -255,17 +229,17 @@ public class Registro extends javax.swing.JFrame {
         Fondo.setLayout(FondoLayout);
         FondoLayout.setHorizontalGroup(
             FondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, FondoLayout.createSequentialGroup()
-                .addContainerGap(47, Short.MAX_VALUE)
+            .addGroup(FondoLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(102, 102, 102))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         FondoLayout.setVerticalGroup(
             FondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(FondoLayout.createSequentialGroup()
-                .addGap(98, 98, 98)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(40, 40, 40)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(53, Short.MAX_VALUE))
         );
 
         getContentPane().add(Fondo, java.awt.BorderLayout.CENTER);
@@ -346,7 +320,6 @@ public class Registro extends javax.swing.JFrame {
     private javax.swing.JPanel Fondo;
     private javax.swing.JButton jBCancelar;
     private javax.swing.JButton jBGuardar;
-    private javax.swing.JComboBox<String> jCBRoles;
     private javax.swing.JLabel jLErrorClave;
     private javax.swing.JLabel jLErrorCont;
     private javax.swing.JLabel jLErrorNombre;
@@ -355,7 +328,6 @@ public class Registro extends javax.swing.JFrame {
     private javax.swing.JLabel jLRegCont2;
     private javax.swing.JLabel jLRegNombre;
     private javax.swing.JLabel jLRegTitulo;
-    private javax.swing.JLabel jLRol;
     private javax.swing.JPanel jPBotones;
     private javax.swing.JPanel jPClave;
     private javax.swing.JPanel jPCont1;

@@ -12,6 +12,9 @@ import java.awt.Color;
  */
 public class Colores {
 
-    public static Color error = new Color(222, 0, 0);
+    public static Color error = new Color(222, 0, 0),
+             agregar = new Color(16, 170, 1),
+             cancelar = new Color(209, 41, 41),
+            guardar = new Color(68, 114, 196);
 
 }
