@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -59,6 +58,7 @@ public class Login extends javax.swing.JFrame {
 
     }
 
+    //Obtenemos los datos de la clave ingresada
     public void obtenerDatos(String clave) {
         if (con != null) {
             try (PreparedStatement ps = con.prepareStatement("SELECT id_usuario,clave,nombre,contrasena FROM Usuarios WHERE clave=\"" + clave + "\";")) {
@@ -76,9 +76,10 @@ public class Login extends javax.swing.JFrame {
         }
     }
 
-    //Indicar los campos que son obligatorios
+   
     public void validarDatos() {
         String usu = jTFUsuario.getText(), contrasena = jPFCont.getText();
+         //Indicar los campos que son obligatorios
         if (usu.isEmpty() || contrasena.isEmpty()) {
             if (jTFUsuario.getText().isEmpty()) {
                 jLErrorUsu.setVisible(true);
@@ -91,23 +92,28 @@ public class Login extends javax.swing.JFrame {
                 jPFCont.setBorder(BorderFactory.createLineBorder(error, 2));
             }
         } else {
+           //Obtenemos los datos y verificamos que existan
             obtenerDatos(usu);
-            
+            //Verificamos la contraseña cifrada
             boolean verificar=Password.check(contrasena, contdb).withBcrypt();
+            //Verificamos que el usuario exista
             if (!usu.equals(clavedb)) {
                 jLErrorUsu.setVisible(true);
                 jLErrorUsu.setText("*El usuario no existe");
                 jTFUsuario.setBorder(BorderFactory.createLineBorder(error, 2));
+                //Verificamos que la contraseña sea la correcta
             } else if (usu.equals(clavedb) && !verificar) {
                 jLErrorCont.setVisible(true);
                 jLErrorCont.setText("*La contraseña es incorrecta");
                 jPFCont.setBorder(BorderFactory.createLineBorder(error, 2));
+                //Si es correcto registramos el inicio en la bd
             } else if (usu.equals(clavedb) && verificar) {
                 try (PreparedStatement ps = con.prepareStatement("INSERT INTO Sesiones(id_usuario,fec_hor_ini_ses) VALUES (" + idusu + ",now());")) {
                     ps.executeUpdate();
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(null, "No se pudieron obtener los datos de registro: " + e, "Atención", JOptionPane.ERROR_MESSAGE);
                 }
+                //Abrimos el menu
                 if (Menu.menu.isActive()) {
                     Menu.menu.toFront();
                 } else {
@@ -117,6 +123,7 @@ public class Login extends javax.swing.JFrame {
                     this.dispose();
                     inicializar();
                 }
+                //guardamos en el archivo log
                 Date todayDate = new Date();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 String fecHor = sdf.format(todayDate);
@@ -125,6 +132,7 @@ public class Login extends javax.swing.JFrame {
         }
     }
 
+    //Metodo que crea en caso de que no exista el archivo log, si existe agrega los nuevos datos
     public void generarLog(String ultReg) {
         try {
             File archivo = new File("Log.txt");
@@ -134,8 +142,6 @@ public class Login extends javax.swing.JFrame {
             String datosAnt = new String(Files.readAllBytes(Paths.get("Log.txt")));
             String textCompl = ultReg + datosAnt;
             Files.write(Paths.get("Log.txt"), textCompl.getBytes());
-
-            System.out.println("Archivo actualizado correctamente.");
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -11,7 +11,7 @@ import java.awt.Color;
  * @author Hecto
  */
 public class Colores {
-
+//Declaracion de colores
     public static Color error = new Color(222, 0, 0),
              fondo = new Color(243, 243, 243),
             fontab = new Color(255, 255, 255),

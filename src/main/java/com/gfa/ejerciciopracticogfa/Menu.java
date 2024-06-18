@@ -17,11 +17,12 @@ import java.util.logging.Logger;
  */
 public class Menu extends javax.swing.JFrame {
     
+    //Creacion de las variables de los frames para el llamado de cada ventana de manera publica
     public static Login login = new Login();
     public static Menu menu = new Menu();
     public static Registro reg = new Registro();
     public static Sesiones ses = new Sesiones();
-
+    //Variables de conexion a la base de datos
     private final conexionBD sql = new conexionBD();
     private final Connection con = sql.conexion();
     private String dato;
@@ -32,6 +33,7 @@ public class Menu extends javax.swing.JFrame {
     public Menu() {
         initComponents();
         setLocationRelativeTo(null);
+        //Pintado de los botones
         jBRegistros.setBackground(agregar);
         jBRegistros.setForeground(Color.white);
         jBUltSes.setBackground(guardar);
@@ -40,7 +42,7 @@ public class Menu extends javax.swing.JFrame {
         jBCerrarSes.setForeground(Color.white);
       
     }
-    
+    //Establece el nombre del usuario en la etiqueta
     public void setDato(String dato){
         this.dato=dato;
           jLBienvenida.setText("Hola "+dato+"!");
@@ -112,19 +114,19 @@ public class Menu extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+//Inicia la ventana de las ultimas sesiones
     private void jBUltSesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBUltSesActionPerformed
         Sesiones ses = new Sesiones();
         ses.setVisible(true);
     }//GEN-LAST:event_jBUltSesActionPerformed
-
+//Abre la ventana para nuevos registros
     private void jBRegistrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBRegistrosActionPerformed
         Registro reg = new Registro();
         reg.setVisible(true);
     }//GEN-LAST:event_jBRegistrosActionPerformed
 
     private void jBCerrarSesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBCerrarSesActionPerformed
-
+        //Cierra la sesion y regresa a la ventana de inicio de sesion
         try {
             con.close();
              if (Menu.reg.isActive()||Menu.ses.isActive()) {

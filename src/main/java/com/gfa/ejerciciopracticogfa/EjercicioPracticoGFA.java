@@ -12,6 +12,7 @@ public class EjercicioPracticoGFA {
     
 
     public static void main(String[] args) {
+        ///Inicia la ventana de inicio de sesion
         Login login = new Login();
         login.setVisible(true);
     }

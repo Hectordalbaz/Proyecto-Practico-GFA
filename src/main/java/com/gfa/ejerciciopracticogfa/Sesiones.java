@@ -26,6 +26,7 @@ public class Sesiones extends javax.swing.JFrame {
     private final Connection con = sql.conexion();
     public Sesiones() {
         initComponents();
+        //Setea los colores de la tabla y el boton
         setLocationRelativeTo(null);
          jBVolver.setBackground(new Color(1, 81, 152));
         jBVolver.setForeground(Color.WHITE);
@@ -37,6 +38,7 @@ public class Sesiones extends javax.swing.JFrame {
     }
     
     public void tabla(JTable tabla){
+        //Quita que la tabla sea editable
         DefaultTableModel modelo = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -46,12 +48,14 @@ public class Sesiones extends javax.swing.JFrame {
         tabla.setModel(modelo);
         try {
             if (con != null) {
+                //Obtiene los datos de la base de datos
                 PreparedStatement ps = con.prepareStatement("SELECT usuarios.nombre,sesiones.fec_hor_ini_ses FROM usuarios RIGHT JOIN Sesiones ON (usuarios.id_usuario=sesiones.id_usuario) ORDER BY sesiones.fec_hor_ini_ses DESC LIMIT 10;");
                 ResultSet rs = ps.executeQuery();
                 ResultSetMetaData rsMd = rs.getMetaData();
                 int cantidadCol = rsMd.getColumnCount();
                 modelo.addColumn("USUARIO");
                 modelo.addColumn("FECHA Y HORA");
+                //Ingresa los datos a la tabla
                 while (rs.next()) {
                     Object[] filas = new Object[cantidadCol];
                     for (int i = 0; i < cantidadCol; i++) {
@@ -62,6 +66,7 @@ public class Sesiones extends javax.swing.JFrame {
                 ps.close();
                 rs.close();
             }
+            //Cambia el color de los encabezados
             DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
             headerRenderer.setBackground(enctab);
             headerRenderer.setForeground(letenc);
@@ -69,6 +74,7 @@ public class Sesiones extends javax.swing.JFrame {
             for (int i = 0; i < tabla.getModel().getColumnCount(); i++) {
                 tabla.getColumnModel().getColumn(i).setHeaderRenderer(headerRenderer);
             }
+            //Cambia el color de las filas
             tabla.setDefaultRenderer(Object.class, new ColorTabla());
         } catch (SQLException e) {
                 System.out.println(e);
@@ -139,6 +145,7 @@ public class Sesiones extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //Regresa al menu
     private void jBVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBVolverActionPerformed
         if (Menu.menu.isActive()) {
                     Menu.menu.toFront();

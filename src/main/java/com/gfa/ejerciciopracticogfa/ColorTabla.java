@@ -15,6 +15,7 @@ import javax.swing.table.DefaultTableCellRenderer;
  */
 public class ColorTabla extends DefaultTableCellRenderer {
 
+    //Metodo que agrega colores a las filas de la tabla
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected,

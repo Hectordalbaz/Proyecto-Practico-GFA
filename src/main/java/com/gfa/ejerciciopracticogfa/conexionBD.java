@@ -13,6 +13,7 @@ import java.sql.SQLException;
  * @author Hecto
  */
 public class conexionBD {
+    //Conexion a la base de datos
     String host = "localhost", puerto = "3306", bd = "usuarios", usuario = "root", cont = "root";
      public Connection conexion(){
          Connection con = null;

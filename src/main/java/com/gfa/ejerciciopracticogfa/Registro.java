@@ -15,7 +15,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -25,6 +24,7 @@ import javax.swing.JTextField;
  */
 public class Registro extends javax.swing.JFrame {
 
+    //Variables de conexion a la base de datos
     private final conexionBD sql = new conexionBD();
     private final Connection con = sql.conexion();
 
@@ -33,7 +33,8 @@ public class Registro extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         inicializar();
     }
-
+    
+//Limpia los campos y las etiquetas
     public final void inicializar() {
         jLErrorClave.setVisible(false);
         jLErrorNombre.setVisible(false);
@@ -44,13 +45,13 @@ public class Registro extends javax.swing.JFrame {
         jTFNombre.setText("");
         jTFCont1.setText("");
         jTFCont2.setText("");
-         jBGuardar.setBackground(guardar);
+        jBGuardar.setBackground(guardar);
         jBGuardar.setForeground(Color.white);
         jBCancelar.setBackground(cancelar);
         jBCancelar.setForeground(Color.white);
-      
-    }
 
+    }
+    //Checa si ya existe un registro con la misma clave
     public boolean validarClave(String clave) {
         int count = 0;
         if (con != null) {
@@ -65,9 +66,10 @@ public class Registro extends javax.swing.JFrame {
         }
         return count <= 0;
     }
-
+    //Valida todos los campos ingresados
     public void validarDatos() {
         String clave = jTFClave.getText(), nombre = jTFNombre.getText(), cont1 = jTFCont1.getText(), cont2 = jTFCont2.getText();
+        //Verifica que los campos no esten vacios
         if (clave.isEmpty() || nombre.isEmpty() || cont1.isEmpty() || cont2.isEmpty()) {
             if (clave.isEmpty()) {
                 jLErrorClave.setVisible(true);
@@ -86,6 +88,7 @@ public class Registro extends javax.swing.JFrame {
                 jTFCont2.setBorder(BorderFactory.createLineBorder(error, 2));
             }
         } else {
+            //Muestra mensaje en caso de que la clave no este disponible o las contraseñas no coincidan
             if (!validarClave(clave)) {
                 jLErrorClave.setVisible(true);
                 jLErrorClave.setText("*Clave no disponible");
@@ -96,19 +99,20 @@ public class Registro extends javax.swing.JFrame {
                 jTFCont1.setBorder(BorderFactory.createLineBorder(error, 2));
                 jTFCont2.setBorder(BorderFactory.createLineBorder(error, 2));
             } else {
-                Hash cifrado= Password.hash(cont1).withBcrypt();
+                //Cifra la contraseña
+                Hash cifrado = Password.hash(cont1).withBcrypt();
+                //Ingresa los datos a la base de datos
                 try (PreparedStatement ps = con.prepareStatement("INSERT INTO Usuarios(clave,nombre,contrasena,Estado,Fec_Hor_Creacion,Fec_Hor_Ult_Mod,Usu_Ult_Mod) VALUES (\"" + clave + "\",\"" + nombre + "\",\"" + cifrado.getResult() + "\",true,now(),now(),\"" + clave + "\");")) {
                     ps.executeUpdate();
                     ps.close();
                 } catch (SQLException e) {
                     System.out.println(e);
                 }
-                    JOptionPane.showMessageDialog(null, "El usuario se registro con exito!", "Atención", JOptionPane.INFORMATION_MESSAGE);
-                    inicializar();
+                JOptionPane.showMessageDialog(null, "El usuario se registro con exito!", "Atención", JOptionPane.INFORMATION_MESSAGE);
+                inicializar();
             }
         }
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -278,22 +282,22 @@ public class Registro extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+  //Regresa el color original al ser enfocado
     private void jTFClaveFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTFClaveFocusGained
         jLErrorClave.setVisible(false);
         jTFClave.setBorder(new JTextField().getBorder());
     }//GEN-LAST:event_jTFClaveFocusGained
-
+  //Regresa el color original al ser enfocado
     private void jTFNombreFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTFNombreFocusGained
         jLErrorNombre.setVisible(false);
         jTFNombre.setBorder(new JTextField().getBorder());
     }//GEN-LAST:event_jTFNombreFocusGained
-
+  //Regresa el color original al ser enfocado
     private void jTFCont1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTFCont1FocusGained
         jLErrorCont.setVisible(false);
         jTFCont1.setBorder(new JTextField().getBorder());
     }//GEN-LAST:event_jTFCont1FocusGained
-
+  //Regresa el color original al ser enfocado
     private void jTFCont2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTFCont2FocusGained
         jLErrorCont.setVisible(false);
         jTFCont2.setBorder(new JTextField().getBorder());
@@ -304,13 +308,14 @@ public class Registro extends javax.swing.JFrame {
     }//GEN-LAST:event_jBGuardarActionPerformed
 
     private void jBCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBCancelarActionPerformed
+       //regresa al menu
         if (Menu.menu.isActive()) {
-                    Menu.menu.toFront();
-                } else {
-                    Menu.menu.setVisible(true);
-                    this.dispose();
-                    inicializar();
-                }
+            Menu.menu.toFront();
+        } else {
+            Menu.menu.setVisible(true);
+            this.dispose();
+            inicializar();
+        }
     }//GEN-LAST:event_jBCancelarActionPerformed
 
     /**
